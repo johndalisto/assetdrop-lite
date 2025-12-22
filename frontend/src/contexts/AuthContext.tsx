@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 import { User } from '../types';
+import { API_ENDPOINTS } from '../config/api';
 
 interface AuthContextType {
   user: User | null;
@@ -33,7 +34,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const login = async (email: string, password: string) => {
     setIsLoading(true);
     try {
-      const response = await fetch('https://deeper-functioning-seats-passage.trycloudflare.com/api/auth/login', {
+      const response = await fetch(API_ENDPOINTS.auth.login, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -68,7 +69,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const signup = async (name: string, email: string, password: string, role: 'submitter' | 'host' | 'admin') => {
     setIsLoading(true);
     try {
-      const response = await fetch('https://deeper-functioning-seats-passage.trycloudflare.com/api/auth/register', {
+      const response = await fetch(API_ENDPOINTS.auth.register, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

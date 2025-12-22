@@ -14,12 +14,30 @@ const PORT = process.env.PORT || 3001;
 
 // Security middleware
 app.use(helmet());
+// CORS configuration - allow frontend domains
+const allowedOrigins = [
+  'http://localhost:3000', 
+  'http://localhost:3002',
+  'https://now-paperback-border-limousines.trycloudflare.com'
+];
+
+// Add Vercel domain from environment variable if set
+if (process.env.CORS_ORIGINS) {
+  const origins = process.env.CORS_ORIGINS.split(',').map(origin => origin.trim());
+  allowedOrigins.push(...origins);
+}
+
 app.use(cors({
-  origin: [
-    'http://localhost:3000', 
-    'http://localhost:3002',
-    'https://now-paperback-border-limousines.trycloudflare.com'
-  ],
+  origin: (origin, callback) => {
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+    
+    if (allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true
 }));
 

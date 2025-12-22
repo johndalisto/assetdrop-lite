@@ -6,6 +6,7 @@ import { AnalyticsDashboard } from '../components/AnalyticsDashboard';
 import { FileManager } from '../components/FileManager';
 import { BulkActions } from '../components/BulkActions';
 import { EmailNotification } from '../components/EmailNotification';
+import { API_ENDPOINTS } from '../config/api';
 
 interface Submission {
   id: string;
@@ -35,7 +36,7 @@ export const DashboardPage: React.FC = () => {
 
   const fetchSubmissions = async () => {
     try {
-      const response = await fetch('https://deeper-functioning-seats-passage.trycloudflare.com/api/submissions');
+      const response = await fetch(API_ENDPOINTS.submissions.list);
       if (response.ok) {
         const data = await response.json();
         // Filter submissions based on user role
@@ -118,7 +119,7 @@ export const DashboardPage: React.FC = () => {
   const updateSubmissionStatus = async (id: string, status: string) => {
     setUpdating(id);
     try {
-      const response = await fetch(`https://deeper-functioning-seats-passage.trycloudflare.com/api/submissions/${id}`, {
+      const response = await fetch(API_ENDPOINTS.submissions.update(id), {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -155,7 +156,7 @@ export const DashboardPage: React.FC = () => {
 
   const handleBulkExport = async () => {
     try {
-      const response = await fetch('https://deeper-functioning-seats-passage.trycloudflare.com/api/submissions/export');
+      const response = await fetch(API_ENDPOINTS.submissions.export);
       if (response.ok) {
         const blob = await response.blob();
         const url = window.URL.createObjectURL(blob);

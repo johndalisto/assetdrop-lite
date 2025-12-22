@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { SubmitterRole } from '../types';
+import { API_ENDPOINTS } from '../config/api';
 
 export const SubmissionPage: React.FC = () => {
   const [selectedRole, setSelectedRole] = useState<SubmitterRole | null>(null);
@@ -52,7 +53,7 @@ export const SubmissionPage: React.FC = () => {
     });
 
     try {
-      const response = await fetch('https://deeper-functioning-seats-passage.trycloudflare.com/api/files/upload-multiple', {
+      const response = await fetch(API_ENDPOINTS.files.uploadMultiple, {
         method: 'POST',
         body: formData,
       });
@@ -79,7 +80,7 @@ export const SubmissionPage: React.FC = () => {
     setSubmitMessage('');
 
     try {
-      const response = await fetch('https://deeper-functioning-seats-passage.trycloudflare.com/api/submissions', {
+      const response = await fetch(API_ENDPOINTS.submissions.create, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

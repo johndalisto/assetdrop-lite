@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import { API_ENDPOINTS } from '../config/api';
 
 interface Submission {
   id: string;
@@ -20,7 +21,7 @@ export const ClientDashboard: React.FC = () => {
 
   const fetchSubmissions = async () => {
     try {
-      const response = await fetch('https://deeper-functioning-seats-passage.trycloudflare.com/api/submissions');
+      const response = await fetch(API_ENDPOINTS.submissions.list);
       if (response.ok) {
         const data = await response.json();
         // Filter to show only user's own submissions
