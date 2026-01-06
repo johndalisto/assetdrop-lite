@@ -15,64 +15,8 @@ export const NotificationSystem: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const { user } = useAuth();
 
-  useEffect(() => {
-    // Simulate real-time notifications
-    const interval = setInterval(() => {
-      if (user?.role === 'admin') {
-        // Generate random admin notifications
-        const adminNotifications = [
-          {
-            id: Date.now().toString(),
-            type: 'info' as const,
-            title: 'New Submission',
-            message: 'A new musician application has been submitted',
-            timestamp: new Date(),
-            read: false
-          },
-          {
-            id: (Date.now() + 1).toString(),
-            type: 'success' as const,
-            title: 'Application Approved',
-            message: 'Speaker application has been approved',
-            timestamp: new Date(),
-            read: false
-          }
-        ];
-
-        if (Math.random() > 0.7) {
-          const notification = adminNotifications[Math.floor(Math.random() * adminNotifications.length)];
-          setNotifications(prev => [notification, ...prev.slice(0, 4)]);
-        }
-      } else {
-        // Generate user notifications
-        const userNotifications = [
-          {
-            id: Date.now().toString(),
-            type: 'success' as const,
-            title: 'Application Submitted',
-            message: 'Your application has been successfully submitted',
-            timestamp: new Date(),
-            read: false
-          },
-          {
-            id: (Date.now() + 1).toString(),
-            type: 'info' as const,
-            title: 'Status Update',
-            message: 'Your application status has been updated',
-            timestamp: new Date(),
-            read: false
-          }
-        ];
-
-        if (Math.random() > 0.8) {
-          const notification = userNotifications[Math.floor(Math.random() * userNotifications.length)];
-          setNotifications(prev => [notification, ...prev.slice(0, 4)]);
-        }
-      }
-    }, 10000); // Check every 10 seconds
-
-    return () => clearInterval(interval);
-  }, [user]);
+  // Notifications are now only triggered by actual events (submission success, status changes, etc.)
+  // No automatic random notifications to prevent spam
 
   const markAsRead = (id: string) => {
     setNotifications(prev => 

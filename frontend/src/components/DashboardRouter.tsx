@@ -1,6 +1,7 @@
 import React from 'react';
 import { AdminDashboard } from '../pages/AdminDashboard';
 import { ClientDashboard } from '../pages/ClientDashboard';
+import { HostDashboard } from '../pages/HostDashboard';
 import { useAuth } from '../contexts/AuthContext';
 
 export const DashboardRouter: React.FC = () => {
@@ -11,6 +12,10 @@ export const DashboardRouter: React.FC = () => {
     return <AdminDashboard />;
   }
 
-  // Default to client dashboard for submitters and hosts
+  if (user?.role === 'host') {
+    return <HostDashboard />;
+  }
+
+  // Default to client dashboard for submitters
   return <ClientDashboard />;
 };

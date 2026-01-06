@@ -1,14 +1,26 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { SubmitterRole } from '../types';
 import { API_ENDPOINTS } from '../config/api';
 
 export const SubmissionPage: React.FC = () => {
+  const navigate = useNavigate();
   const [selectedRole, setSelectedRole] = useState<SubmitterRole | null>(null);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     phone: '',
     bio: '',
+    // Role-specific fields
+    genre: '',
+    instruments: '',
+    musicLinks: '',
+    topics: '',
+    speakingExperience: '',
+    presentationMaterials: '',
+    filmTitle: '',
+    filmGenre: '',
+    screeningDetails: '',
     socialMedia: {
       instagram: '',
       twitter: '',
@@ -92,6 +104,22 @@ export const SubmissionPage: React.FC = () => {
           bio: formData.bio || '',
           role: selectedRole,
           status: 'Draft',
+          // Role-specific data
+          ...(selectedRole === 'musician' && {
+            genre: formData.genre,
+            instruments: formData.instruments,
+            musicLinks: formData.musicLinks || ''
+          }),
+          ...(selectedRole === 'speaker' && {
+            topics: formData.topics,
+            speakingExperience: formData.speakingExperience || '',
+            presentationMaterials: formData.presentationMaterials || ''
+          }),
+          ...(selectedRole === 'film-presenter' && {
+            filmTitle: formData.filmTitle,
+            filmGenre: formData.filmGenre,
+            screeningDetails: formData.screeningDetails || ''
+          }),
           socialMedia: {
             instagram: formData.socialMedia.instagram || '',
             twitter: formData.socialMedia.twitter || '',
@@ -105,20 +133,10 @@ export const SubmissionPage: React.FC = () => {
 
       if (response.ok) {
         setSubmitMessage('Submission created successfully!');
-        setFormData({ 
-          name: '', 
-          email: '', 
-          phone: '', 
-          bio: '',
-          socialMedia: {
-            instagram: '',
-            twitter: '',
-            linkedin: '',
-            website: '',
-            youtube: '',
-            tiktok: ''
-          }
-        });
+        // Redirect to dashboard after 1.5 seconds
+        setTimeout(() => {
+          navigate('/dashboard');
+        }, 1500);
       } else {
         const error = await response.json();
         setSubmitMessage(`Error: ${error.error || 'Failed to submit'}`);
@@ -262,6 +280,160 @@ export const SubmissionPage: React.FC = () => {
                 Optional: Share your background and expertise to help us understand your work better.
               </p>
             </div>
+
+            {/* Role-Specific Fields */}
+            {selectedRole === 'musician' && (
+              <div className="space-y-4 bg-purple-50 p-6 rounded-lg border border-purple-200">
+                <h4 className="text-lg font-semibold text-purple-900 mb-4">
+                  <i className="fas fa-music mr-2"></i>
+                  Musician-Specific Information
+                </h4>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">
+                      Music Genre *
+                    </label>
+                    <input
+                      type="text"
+                      name="genre"
+                      value={formData.genre}
+                      onChange={handleInputChange}
+                      className="form-input focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                      placeholder="e.g., Jazz, Rock, Classical, Hip-Hop"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">
+                      Instruments Played *
+                    </label>
+                    <input
+                      type="text"
+                      name="instruments"
+                      value={formData.instruments}
+                      onChange={handleInputChange}
+                      className="form-input focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                      placeholder="e.g., Piano, Guitar, Drums"
+                      required
+                    />
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    Music Samples / Links (Optional)
+                  </label>
+                  <textarea
+                    rows={3}
+                    name="musicLinks"
+                    value={formData.musicLinks}
+                    onChange={handleInputChange}
+                    className="form-input focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                    placeholder="Share links to your music on Spotify, SoundCloud, YouTube, etc."
+                  />
+                </div>
+              </div>
+            )}
+
+            {selectedRole === 'speaker' && (
+              <div className="space-y-4 bg-blue-50 p-6 rounded-lg border border-blue-200">
+                <h4 className="text-lg font-semibold text-blue-900 mb-4">
+                  <i className="fas fa-microphone mr-2"></i>
+                  Speaker-Specific Information
+                </h4>
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    Speaking Topics / Expertise *
+                  </label>
+                  <input
+                    type="text"
+                    name="topics"
+                    value={formData.topics}
+                    onChange={handleInputChange}
+                    className="form-input focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                    placeholder="e.g., Technology, Business, Leadership, Health & Wellness"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    Speaking Experience (Optional)
+                  </label>
+                  <textarea
+                    rows={3}
+                    name="speakingExperience"
+                    value={formData.speakingExperience}
+                    onChange={handleInputChange}
+                    className="form-input focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                    placeholder="Tell us about your previous speaking engagements, conferences, or events"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    Presentation Materials (Optional)
+                  </label>
+                  <textarea
+                    rows={2}
+                    name="presentationMaterials"
+                    value={formData.presentationMaterials}
+                    onChange={handleInputChange}
+                    className="form-input focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                    placeholder="Describe any presentation materials, slides, or resources you'll provide"
+                  />
+                </div>
+              </div>
+            )}
+
+            {selectedRole === 'film-presenter' && (
+              <div className="space-y-4 bg-orange-50 p-6 rounded-lg border border-orange-200">
+                <h4 className="text-lg font-semibold text-orange-900 mb-4">
+                  <i className="fas fa-film mr-2"></i>
+                  Film Presenter-Specific Information
+                </h4>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">
+                      Film Title *
+                    </label>
+                    <input
+                      type="text"
+                      name="filmTitle"
+                      value={formData.filmTitle}
+                      onChange={handleInputChange}
+                      className="form-input focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                      placeholder="Title of your film"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">
+                      Film Genre *
+                    </label>
+                    <input
+                      type="text"
+                      name="filmGenre"
+                      value={formData.filmGenre}
+                      onChange={handleInputChange}
+                      className="form-input focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                      placeholder="e.g., Documentary, Drama, Comedy, Short Film"
+                      required
+                    />
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    Screening Details / Availability (Optional)
+                  </label>
+                  <textarea
+                    rows={3}
+                    name="screeningDetails"
+                    value={formData.screeningDetails}
+                    onChange={handleInputChange}
+                    className="form-input focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                    placeholder="Share any screening dates, availability, or special requirements"
+                  />
+                </div>
+              </div>
+            )}
 
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-2">
@@ -443,7 +615,7 @@ export const SubmissionPage: React.FC = () => {
                 ) : (
                   <>
                     <i className="fas fa-paper-plane mr-2"></i>
-                    Submit Application
+                    Submit Assets
                   </>
                 )}
               </button>

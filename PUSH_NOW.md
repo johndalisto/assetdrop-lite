@@ -1,7 +1,6 @@
 # 🚀 Push to GitHub - Simple Steps
 
 ## ✅ **You Have Everything Ready!**
-
 Your token: `[YOUR_PERSONAL_ACCESS_TOKEN]`
 
 ---
